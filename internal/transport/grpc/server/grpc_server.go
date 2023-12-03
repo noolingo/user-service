@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/MelnikovNA/noolingo-user-service/internal/service"
 	"github.com/MelnikovNA/noolingoproto/codegen/go/noolingo"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -12,18 +13,20 @@ import (
 )
 
 type Server struct {
-	host   string
-	port   string
-	server *grpc.Server
-	logger *logrus.Logger
+	host    string
+	port    string
+	server  *grpc.Server
+	service service.Service
+	logger  *logrus.Logger
 }
 
-func New(host string, port string, logger *logrus.Logger) *Server {
+func New(host string, port string, service service.Service, logger *logrus.Logger) *Server {
 	return &Server{
-		host:   host,
-		port:   port,
-		server: grpc.NewServer(),
-		logger: logger,
+		host:    host,
+		port:    port,
+		server:  grpc.NewServer(),
+		service: service,
+		logger:  logger,
 	}
 }
 
@@ -33,7 +36,7 @@ func (s *Server) Serve() error {
 		return fmt.Errorf("can't start listening addr: %w", err)
 	}
 	grpc_health_v1.RegisterHealthServer(s.server, health.NewServer())
-	noolingo.RegisterUserServer(s.server, newUserServer(s.logger))
+	noolingo.RegisterUserServer(s.server, newUserServer(s.logger, s.service))
 	err = s.server.Serve(lis)
 
 	if err != nil {

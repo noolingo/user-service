@@ -7,6 +7,8 @@ import (
 	"syscall"
 
 	"github.com/MelnikovNA/noolingo-user-service/internal/domain"
+	"github.com/MelnikovNA/noolingo-user-service/internal/repository"
+	"github.com/MelnikovNA/noolingo-user-service/internal/service"
 	grpcserver "github.com/MelnikovNA/noolingo-user-service/internal/transport/grpc/server"
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/pkg/errors"
@@ -28,8 +30,11 @@ func Run(config string) error {
 	log := logrus.New()
 	log.Infof("Hello app!%#v", cfg)
 
+	r := repository.New()
+	s := service.New(r)
+
 	eg, egctx := errgroup.WithContext(context.Background())
-	g := grpcserver.New(cfg.GrpcServer.Host, cfg.GrpcServer.Port, log)
+	g := grpcserver.New(cfg.GrpcServer.Host, cfg.GrpcServer.Port, s, log)
 
 	_ = egctx
 	_ = g
