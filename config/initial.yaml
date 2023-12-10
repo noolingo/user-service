@@ -4,3 +4,4 @@ grpcserver:
     port: "9001"
 mysql:
     dsn: ""
+    

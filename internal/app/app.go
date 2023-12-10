@@ -27,6 +27,8 @@ func Run(config string) error {
 		return err
 	}
 
+	parseFlags(cfg)
+
 	log := logrus.New()
 	log.Infof("Hello app!%#v", cfg)
 
