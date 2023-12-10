@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/MelnikovNA/noolingo-user-service/internal/domain"
+	"github.com/MelnikovNA/noolingo-user-service/internal/drivers/mysql"
 	"github.com/MelnikovNA/noolingo-user-service/internal/repository"
 	"github.com/MelnikovNA/noolingo-user-service/internal/service"
 	grpcserver "github.com/MelnikovNA/noolingo-user-service/internal/transport/grpc/server"
@@ -32,7 +33,12 @@ func Run(config string) error {
 	log := logrus.New()
 	log.Infof("Hello app!%#v", cfg)
 
-	r := repository.New()
+	db, err := mysql.New(&cfg.Mysql)
+	if err != nil {
+		return err
+	}
+
+	r := repository.New(db)
 	s := service.New(r)
 
 	eg, egctx := errgroup.WithContext(context.Background())
@@ -70,6 +76,6 @@ func Run(config string) error {
 		return nil
 	})
 
-	err := eg.Wait()
+	err = eg.Wait()
 	return err
 }
