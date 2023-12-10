@@ -27,3 +27,16 @@ func (u *userService) GetUserByID(ctx context.Context, id string) (*domain.User,
 
 	return user, err
 }
+
+func (u *userService) CreateUser(ctx context.Context, user *domain.User) (string, error) {
+	return u.repository.CreateUser(ctx, user)
+}
+
+func (u *userService) UpdateUser(ctx context.Context, user *domain.User) error {
+	user2, err := u.GetUserByID(ctx, user.ID)
+	if err != nil {
+		return err
+	}
+	user.Password = user2.Password
+	return u.repository.UpdateUser(ctx, user)
+}

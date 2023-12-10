@@ -9,6 +9,8 @@ import (
 
 type Service interface {
 	GetUserByID(ctx context.Context, id string) (*domain.User, error)
+	CreateUser(ctx context.Context, user *domain.User) (string, error)
+	UpdateUser(ctx context.Context, user *domain.User) error
 }
 
 func New(r repository.Repository) Service {

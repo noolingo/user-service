@@ -11,7 +11,7 @@ type Repository interface {
 	GetUserByID(ctx context.Context, id string) (*domain.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*domain.User, error)
 	CreateUser(ctx context.Context, user *domain.User) (userID string, err error)
-	UpdateUser(ctx context.Context, user *domain.User) (userID string, err error)
+	UpdateUser(ctx context.Context, user *domain.User) (err error)
 	DeleteUser(ctx context.Context, id string) (err error)
 }
 

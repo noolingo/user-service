@@ -3,6 +3,7 @@ package grpcserver
 import (
 	"context"
 
+	"github.com/MelnikovNA/noolingo-user-service/internal/domain"
 	"github.com/MelnikovNA/noolingo-user-service/internal/service"
 	"github.com/MelnikovNA/noolingoproto/codegen/go/common"
 	"github.com/MelnikovNA/noolingoproto/codegen/go/noolingo"
@@ -17,6 +18,20 @@ type UserServer struct {
 
 func newUserServer(logger *logrus.Logger, service service.Service) UserServer {
 	return UserServer{logger: logger, service: service}
+}
+
+func newResponse(err error) (*common.Response, error) {
+	response := &common.Response{
+		Result: err == nil,
+	}
+
+	if err != nil {
+		response.Error = &common.Error{
+			Error: err.Error(),
+		}
+	}
+
+	return response, err
 }
 
 func (u UserServer) SignUp(_ context.Context, _ *noolingo.SignUpRequest) (*common.Response, error) {
@@ -39,16 +54,31 @@ func (u UserServer) GetUser(ctx context.Context, req *noolingo.GetUserRequest) (
 	return &noolingo.GetUserResponse{Result: &noolingo.UserObject{Id: user.ID, Name: user.Name, Email: user.Email}}, nil
 }
 
-func (u UserServer) UpdateUser(_ context.Context, _ *noolingo.UpdateUserRequest) (*common.Response, error) {
-	panic("not implemented") // TODO: Implement
+func (u UserServer) UpdateUser(ctx context.Context, req *noolingo.UpdateUserRequest) (*common.Response, error) {
+	err := u.service.UpdateUser(ctx, &domain.User{
+		Name:  req.Name,
+		Email: req.Email,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return newResponse(err)
 }
 
 func (u UserServer) DeleteUser(_ context.Context, _ *noolingo.DeleteUserRequest) (*common.Response, error) {
 	panic("not implemented") // TODO: Implement
 }
 
-func (u UserServer) CreateUser(_ context.Context, _ *noolingo.CreateUserRequest) (*common.Response, error) {
-	panic("not implemented") // TODO: Implement
+func (u UserServer) CreateUser(ctx context.Context, req *noolingo.CreateUserRequest) (*common.Response, error) {
+	_, err := u.service.CreateUser(ctx, &domain.User{
+		Name:     req.Name,
+		Email:    req.Email,
+		Password: req.Password,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return newResponse(err)
 }
 
 func (u UserServer) UpdatePassword(_ context.Context, _ *noolingo.UpdatePasswordRequest) (*common.Response, error) {

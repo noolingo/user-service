@@ -69,17 +69,14 @@ func (u *user) CreateUser(ctx context.Context, user2 *domain.User) (userID strin
 	return fmt.Sprint(res.LastInsertId()), nil
 }
 
-func (u *user) UpdateUser(ctx context.Context, user2 *domain.User) (userID string, err error) {
+func (u *user) UpdateUser(ctx context.Context, user2 *domain.User) (err error) {
 	ins, err := u.db.PrepareContext(ctx,
 		"update user set name=?,email=?,password=? where id=?")
 	if err != nil {
-		return "", err
+		return err
 	}
-	res, err := ins.ExecContext(ctx, user2.Name, user2.Email, user2.Password, user2.ID)
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprint(res.LastInsertId()), nil
+	_, err = ins.ExecContext(ctx, user2.Name, user2.Email, user2.Password, user2.ID)
+	return err
 }
 
 func (u *user) DeleteUser(ctx context.Context, id string) (err error) {
