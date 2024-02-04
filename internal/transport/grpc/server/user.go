@@ -34,8 +34,16 @@ func newResponse(err error) (*common.Response, error) {
 	return response, err
 }
 
-func (u UserServer) SignUp(_ context.Context, _ *noolingo.SignUpRequest) (*common.Response, error) {
-	panic("not implemented") // TODO: Implement
+func (u UserServer) SignUp(ctx context.Context, req *noolingo.SignUpRequest) (*common.Response, error) {
+	_, err := u.service.CreateUser(ctx, &domain.User{
+		Name:     req.Name,
+		Email:    req.Email,
+		Password: req.Password,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return newResponse(err)
 }
 
 func (u UserServer) SignIn(_ context.Context, _ *noolingo.SignInRequest) (*noolingo.SignInReply, error) {
