@@ -40,11 +40,3 @@ func (u *userService) UpdateUser(ctx context.Context, user *domain.User) error {
 	user.Password = user2.Password
 	return u.repository.UpdateUser(ctx, user)
 }
-
-func (u *userService) DeleteUser(ctx context.Context, user *domain.User) error {
-	err := u.DeleteUser(ctx, user.ID)
-	if err != nil {
-		return err
-	}
-	return err
-}

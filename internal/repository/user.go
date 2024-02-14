@@ -15,6 +15,13 @@ type user struct {
 	db *sql.DB
 }
 
+// var testuser = &domain.User{
+// 	ID:       "1",
+// 	Name:     "test",
+// 	Email:    "test@test.com",
+// 	Password: "123456",
+// }
+
 func (u *user) GetUserByID(ctx context.Context, id string) (*domain.User, error) {
 	user := &domain.User{}
 	err := u.db.QueryRowContext(ctx, "select * from user where id=?", id).Scan(
