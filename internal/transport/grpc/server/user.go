@@ -74,13 +74,18 @@ func (u UserServer) UpdateUser(ctx context.Context, req *noolingo.UpdateUserRequ
 }
 
 func (u UserServer) DeleteUser(_ context.Context, _ *noolingo.DeleteUserRequest) (*common.Response, error) {
-	panic("not implemented") // TODO: Implement
+	err := u.service.DeleteUser(ctx, &domain.User{
+		ID: req.ID,
+	})
+	if err != nil {
+		return err
+	}
+	return newResponse(err)
 }
 
 func (u UserServer) CreateUser(ctx context.Context, req *noolingo.CreateUserRequest) (*common.Response, error) {
 	_, err := u.service.CreateUser(ctx, &domain.User{
 		Name:     req.Name,
-		Email:    req.Email,
 		Password: req.Password,
 	})
 	if err != nil {
