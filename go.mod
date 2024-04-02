@@ -3,7 +3,7 @@ module github.com/MelnikovNA/noolingo-user-service
 go 1.21.4
 
 require (
-	github.com/MelnikovNA/noolingoproto v0.0.0-20231105150806-05da0149cf41
+	github.com/MelnikovNA/noolingoproto v0.0.0-20240203091227-a775bee0d28d
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
@@ -11,6 +11,8 @@ require (
 	google.golang.org/grpc v1.47.0
 	gopkg.in/yaml.v3 v3.0.1
 )
+
+require github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
 
 require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
