@@ -2,9 +2,11 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/MelnikovNA/noolingo-user-service/internal/domain"
 	"github.com/MelnikovNA/noolingo-user-service/internal/pkg/tokens"
+	"github.com/MelnikovNA/noolingo-user-service/internal/repository"
 	"github.com/MelnikovNA/noolingoproto/codegen/go/apierrors"
 	"github.com/sirupsen/logrus"
 )
@@ -12,6 +14,7 @@ import (
 type AuthService struct {
 	logger       *logrus.Logger
 	config       *domain.Config
+	repository   repository.Repository
 	accessToken  tokens.JWTToken
 	refreshToken tokens.JWTToken
 }
@@ -33,10 +36,14 @@ func (a *AuthService) Refresh(ctx context.Context, refreshToken string) (newAcce
 	ParsedUserID, err := a.refreshToken.ParseToken(refreshToken)
 	if err != nil {
 		a.logger.WithError(err).Warn("token parse error")
-		switch err{
-			case tokens.
-		}
+		return "", "", apierrors.ErrTokenExpired
 	}
+	user, err := a.repository.GetUserByID(ctx, ParsedUserID)
+	if err != nil {
+		a.logger.WithError(err).Errorf("error in db")
+		return "", "", errors.New("error in DB")
+	}
+	newAccessToken, newRefreshToken, err = a.makeToken(ctx, user)
 
-	return newAccessToken, newRefreshToken, nil
+	return
 }
