@@ -9,17 +9,21 @@ import (
 )
 
 type JWTToken struct {
-	config *domain.Config
+	auth *domain.AppAuth
+}
+
+func New(a *domain.AppAuth) *JWTToken {
+	return &JWTToken{auth: a}
 }
 
 func (t *JWTToken) NewToken(userID string, ttl time.Duration) (string, error) {
 	claims := jwt.MapClaims{
-		"userId": userID,
+		"userID": userID,
 		"ttl":    time.Now().Add(ttl),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(t.config.Auth.AccessSecretKey)
+	return token.SignedString(t.auth.AccessSecretKey)
 }
 
 func (t *JWTToken) ParseToken(tokenString string) (string, error) {
@@ -28,13 +32,13 @@ func (t *JWTToken) ParseToken(tokenString string) (string, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("unexpected signing method")
 		}
-		return t.config.Auth.AccessSecretKey, nil
+		return t.auth.AccessSecretKey, nil
 	})
 	if err != nil {
 		return "", err
 	}
 	if !token.Valid {
-		return "", errors.New("token is invalid")
+		return "", errors.New("token is invalid")//переписать
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)

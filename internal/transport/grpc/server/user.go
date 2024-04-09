@@ -13,11 +13,11 @@ import (
 type UserServer struct {
 	noolingo.UnimplementedUserServer
 	logger  *logrus.Logger
-	service service.Service
+	service *service.Services
 }
 
 func newUserServer(logger *logrus.Logger, service service.Service) UserServer {
-	return UserServer{logger: logger, service: service}
+	return UserServer{logger: logger, service: ser}
 }
 
 func newResponse(err error) (*common.Response, error) {
@@ -35,7 +35,7 @@ func newResponse(err error) (*common.Response, error) {
 }
 
 func (u UserServer) SignUp(ctx context.Context, req *noolingo.SignUpRequest) (*common.Response, error) {
-	_, err := u.service.CreateUser(ctx, &domain.User{
+	_, err := u.service.Auth.SignUp(ctx, &domain.User{
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: req.Password,
