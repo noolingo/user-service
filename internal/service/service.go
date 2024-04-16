@@ -21,7 +21,7 @@ type User interface {
 
 type Auth interface {
 	SignUp(ctx context.Context, user *domain.User) (string, error)
-	SignIn(ctx context.Context, login string, password string) (accessToken string, refreshToken string, err error)
+	SignIn(ctx context.Context, email string, password string) (accessToken string, refreshToken string, err error)
 	Refresh(ctx context.Context, refreshToken string) (newAccessToken string, newRefreshToken string, err error)
 	SignOut(ctx context.Context, accessToken, refreshToken string) error
 }
@@ -43,7 +43,3 @@ func New(p *Params) *Services {
 		User: NewUserService(p),
 	}
 }
-
-// func New(r repository.Repository, token *tokens.JWTToken) Service {
-// 	return &userService{repository: r, token: token}
-// }

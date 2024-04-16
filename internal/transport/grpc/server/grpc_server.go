@@ -16,11 +16,11 @@ type Server struct {
 	host    string
 	port    string
 	server  *grpc.Server
-	service service.Service
+	service *service.Services
 	logger  *logrus.Logger
 }
 
-func New(host string, port string, service service.Service, logger *logrus.Logger) *Server {
+func New(host string, port string, service *service.Services, logger *logrus.Logger) *Server {
 	return &Server{
 		host:    host,
 		port:    port,

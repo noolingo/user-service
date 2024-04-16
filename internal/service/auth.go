@@ -33,20 +33,23 @@ func NewAuthService(p *Params) *AuthService {
 	}
 }
 
-func (a *AuthService) SignIn(ctx context.Context, login string, password string) (accessToken string, refreshToken string, err error) {
-	var user *domain.User
-	if err :=
+func (a *AuthService) SignIn(ctx context.Context, email string, password string) (accessToken string, refreshToken string, err error) {
+	user, err := a.repository.GetUserByEmail(ctx, email)
+	if err != nil {
+		return "", "", err
+	}
+	return a.makeToken(user)
 }
 
 func (a *AuthService) SignOut(ctx context.Context, accessToken, refreshToken string) error {
 	panic("not implemented") //TODO
 }
 
-func (u *AuthService) SignUp(ctx context.Context, user *domain.User) (string, error) {
-	return u.repository.CreateUser(ctx, user)
+func (a *AuthService) SignUp(ctx context.Context, user *domain.User) (string, error) {
+	return a.repository.CreateUser(ctx, user)
 }
 
-func (a *AuthService) makeToken(ctx context.Context, user *domain.User) (accessToken string, refreshToken string, err error) {
+func (a *AuthService) makeToken(user *domain.User) (accessToken string, refreshToken string, err error) {
 	accessToken, err = a.accessToken.NewToken(user.ID, a.config.Auth.AccessKeyTtl)
 	if err != nil {
 		a.logger.WithError(err).Errorf("error generating access token")
@@ -70,7 +73,7 @@ func (a *AuthService) Refresh(ctx context.Context, refreshToken string) (newAcce
 		a.logger.WithError(err).Errorf("error in db")
 		return "", "", errors.New("error in DB")
 	}
-	newAccessToken, newRefreshToken, err = a.makeToken(ctx, user)
+	newAccessToken, newRefreshToken, err = a.makeToken(user)
 
 	return
 }

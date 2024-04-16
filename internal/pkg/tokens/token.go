@@ -23,7 +23,7 @@ func (t *JWTToken) NewToken(userID string, ttl time.Duration) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(t.auth.AccessSecretKey)
+	return token.SignedString([]byte(t.auth.AccessSecretKey))
 }
 
 func (t *JWTToken) ParseToken(tokenString string) (string, error) {
@@ -38,7 +38,7 @@ func (t *JWTToken) ParseToken(tokenString string) (string, error) {
 		return "", err
 	}
 	if !token.Valid {
-		return "", errors.New("token is invalid")//переписать
+		return "", errors.New("token is invalid") //переписать
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
@@ -46,7 +46,7 @@ func (t *JWTToken) ParseToken(tokenString string) (string, error) {
 		return "", err
 	}
 
-	userID, ok := claims["userId"].(string)
+	userID, ok := claims["userID"].(string)
 	if !ok {
 		return "", errors.New("invalid user id")
 	}

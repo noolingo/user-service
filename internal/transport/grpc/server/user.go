@@ -16,8 +16,8 @@ type UserServer struct {
 	service *service.Services
 }
 
-func newUserServer(logger *logrus.Logger, service service.Service) UserServer {
-	return UserServer{logger: logger, service: ser}
+func newUserServer(logger *logrus.Logger, service *service.Services) UserServer {
+	return UserServer{logger: logger, service: service}
 }
 
 func newResponse(err error) (*common.Response, error) {
@@ -46,8 +46,15 @@ func (u UserServer) SignUp(ctx context.Context, req *noolingo.SignUpRequest) (*c
 	return newResponse(err)
 }
 
-func (u UserServer) SignIn(_ context.Context, _ *noolingo.SignInRequest) (*noolingo.SignInReply, error) {
-	panic("not implemented") // TODO: Implement
+func (u UserServer) SignIn(ctx context.Context, requset *noolingo.SignInRequest) (*noolingo.SignInReply, error) {
+	accessToken, refreshToken, err := u.service.Auth.SignIn(ctx, requset.Email, requset.Password)
+	if err != nil {
+		return nil, err
+	}
+	return &noolingo.SignInReply{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}, nil
 }
 
 func (u UserServer) Logout(_ context.Context, _ *noolingo.LogoutRequest) (*common.Response, error) {
@@ -55,7 +62,7 @@ func (u UserServer) Logout(_ context.Context, _ *noolingo.LogoutRequest) (*commo
 }
 
 func (u UserServer) GetUser(ctx context.Context, req *noolingo.GetUserRequest) (*noolingo.GetUserResponse, error) {
-	user, err := u.service.GetUserByID(ctx, req.Id)
+	user, err := u.service.User.GetUserByID(ctx, req.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +70,7 @@ func (u UserServer) GetUser(ctx context.Context, req *noolingo.GetUserRequest) (
 }
 
 func (u UserServer) UpdateUser(ctx context.Context, req *noolingo.UpdateUserRequest) (*common.Response, error) {
-	err := u.service.UpdateUser(ctx, &domain.User{
+	err := u.service.User.UpdateUser(ctx, &domain.User{
 		Name:  req.Name,
 		Email: req.Email,
 	})
@@ -78,7 +85,7 @@ func (u UserServer) DeleteUser(_ context.Context, _ *noolingo.DeleteUserRequest)
 }
 
 func (u UserServer) CreateUser(ctx context.Context, req *noolingo.CreateUserRequest) (*common.Response, error) {
-	_, err := u.service.CreateUser(ctx, &domain.User{
+	_, err := u.service.Auth.SignUp(ctx, &domain.User{
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: req.Password,
@@ -94,9 +101,5 @@ func (u UserServer) UpdatePassword(_ context.Context, _ *noolingo.UpdatePassword
 }
 
 func (u UserServer) Refresh(_ context.Context, _ *noolingo.RefreshRequest) (*noolingo.RefreshReply, error) {
-	panic("not implemented") // TODO: Implement
-}
-
-func (u UserServer) mustEmbedUnimplementedUserServer() {
 	panic("not implemented") // TODO: Implement
 }
