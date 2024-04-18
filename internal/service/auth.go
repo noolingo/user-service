@@ -8,6 +8,7 @@ import (
 	"github.com/MelnikovNA/noolingo-user-service/internal/pkg/tokens"
 	"github.com/MelnikovNA/noolingo-user-service/internal/repository"
 	"github.com/MelnikovNA/noolingoproto/codegen/go/apierrors"
+	enc "github.com/MelnikovNA/sha256password"
 	"github.com/sirupsen/logrus"
 )
 
@@ -38,6 +39,12 @@ func (a *AuthService) SignIn(ctx context.Context, email string, password string)
 	if err != nil {
 		return "", "", err
 	}
+	if user == nil {
+		return "", "", apierrors.ErrNotFound
+	}
+	if !enc.CompWithEncrypted(password, user.Password) {
+		return "", "", apierrors.ErrForbidden
+	}
 	return a.makeToken(user)
 }
 
@@ -46,6 +53,7 @@ func (a *AuthService) SignOut(ctx context.Context, accessToken, refreshToken str
 }
 
 func (a *AuthService) SignUp(ctx context.Context, user *domain.User) (string, error) {
+	user.Password, _ = enc.EncryptPassword(user.Password)
 	return a.repository.CreateUser(ctx, user)
 }
 

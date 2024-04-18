@@ -62,6 +62,11 @@ func (u UserServer) Logout(_ context.Context, _ *noolingo.LogoutRequest) (*commo
 }
 
 func (u UserServer) GetUser(ctx context.Context, req *noolingo.GetUserRequest) (*noolingo.GetUserResponse, error) {
+	r, err := Auth(ctx)
+	if err != nil {
+		return nil, err
+	}
+	u.logger.Printf("userID: %v", r.UserID)
 	user, err := u.service.User.GetUserByID(ctx, req.Id)
 	if err != nil {
 		return nil, err
