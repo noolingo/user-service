@@ -3,10 +3,10 @@ cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMT
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/toml v1.2.1 h1:9F2/+DoOYIOksmaJFPw1tGFy1eDnIJXg+UHjuD8lTak=
 github.com/BurntSushi/toml v1.2.1/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
-github.com/MelnikovNA/noolingoproto v0.0.0-20231105150806-05da0149cf41 h1:lFECMj3c6CqDWHQ3bn31eozsrbCBgfRlyBdnBBLcazg=
-github.com/MelnikovNA/noolingoproto v0.0.0-20231105150806-05da0149cf41/go.mod h1:5qjZRNJ2SL/9X4H0bj6bAVA06iCXh4wag4EeuWmg+Ug=
 github.com/MelnikovNA/noolingoproto v0.0.0-20240203091227-a775bee0d28d h1:LvyHM5/RhjmLKpHqKjJuP2Sm/Kkxsd6+dIzaOkJYTzs=
 github.com/MelnikovNA/noolingoproto v0.0.0-20240203091227-a775bee0d28d/go.mod h1:5qjZRNJ2SL/9X4H0bj6bAVA06iCXh4wag4EeuWmg+Ug=
+github.com/MelnikovNA/sha256password v0.0.0-20240418124606-8c461022a533 h1:gb7SOV9230b2w8gr6juajn3YbGcHf51nJ7bR9oJlijw=
+github.com/MelnikovNA/sha256password v0.0.0-20240418124606-8c461022a533/go.mod h1:L5JfLK0hvsWnCjQ6xZGZimTQE1gEu/VHkvn+COol1hk=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=

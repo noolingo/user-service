@@ -33,13 +33,19 @@ func Run(config string) error {
 	log := logrus.New()
 	log.Infof("Hello app!%#v", cfg)
 
+	//token := tokens.New(&cfg.Auth)
+
 	db, err := mysql.New(&cfg.Mysql)
 	if err != nil {
 		return err
 	}
 
 	r := repository.New(db)
-	s := service.New(r)
+	s := service.New(&service.Params{
+		Logger:     log,
+		Config:     cfg,
+		Repository: &r,
+	})
 
 	eg, egctx := errgroup.WithContext(context.Background())
 	g := grpcserver.New(cfg.GrpcServer.Host, cfg.GrpcServer.Port, s, log)

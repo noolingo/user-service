@@ -8,6 +8,7 @@ import (
 	"github.com/MelnikovNA/noolingo-user-service/internal/pkg/tokens"
 	"github.com/MelnikovNA/noolingo-user-service/internal/repository"
 	"github.com/MelnikovNA/noolingoproto/codegen/go/apierrors"
+	enc "github.com/MelnikovNA/sha256password"
 	"github.com/sirupsen/logrus"
 )
 
@@ -19,7 +20,44 @@ type AuthService struct {
 	refreshToken tokens.JWTToken
 }
 
-func (a *AuthService) makeToken(ctx context.Context, user *domain.User) (accessToken string, refreshToken string, err error) {
+func NewAuthService(p *Params) *AuthService {
+	if p.Config.Auth.RefreshSecretKey == "" || p.Config.Auth.AccessSecretKey == "" {
+		panic("RefreshSecretKey or AccessSecretKey is not set")
+	}
+
+	return &AuthService{
+		logger:       p.Logger,
+		config:       p.Config,
+		repository:   *p.Repository,
+		accessToken:  *tokens.New(&p.Config.Auth),
+		refreshToken: *tokens.New(&p.Config.Auth),
+	}
+}
+
+func (a *AuthService) SignIn(ctx context.Context, email string, password string) (accessToken string, refreshToken string, err error) {
+	user, err := a.repository.GetUserByEmail(ctx, email)
+	if err != nil {
+		return "", "", err
+	}
+	if user == nil {
+		return "", "", apierrors.ErrNotFound
+	}
+	if !enc.CompWithEncrypted(password, user.Password) {
+		return "", "", apierrors.ErrForbidden
+	}
+	return a.makeToken(user)
+}
+
+func (a *AuthService) SignOut(ctx context.Context, accessToken, refreshToken string) error {
+	panic("not implemented") //TODO
+}
+
+func (a *AuthService) SignUp(ctx context.Context, user *domain.User) (string, error) {
+	user.Password, _ = enc.EncryptPassword(user.Password)
+	return a.repository.CreateUser(ctx, user)
+}
+
+func (a *AuthService) makeToken(user *domain.User) (accessToken string, refreshToken string, err error) {
 	accessToken, err = a.accessToken.NewToken(user.ID, a.config.Auth.AccessKeyTtl)
 	if err != nil {
 		a.logger.WithError(err).Errorf("error generating access token")
@@ -43,7 +81,7 @@ func (a *AuthService) Refresh(ctx context.Context, refreshToken string) (newAcce
 		a.logger.WithError(err).Errorf("error in db")
 		return "", "", errors.New("error in DB")
 	}
-	newAccessToken, newRefreshToken, err = a.makeToken(ctx, user)
+	newAccessToken, newRefreshToken, err = a.makeToken(user)
 
 	return
 }

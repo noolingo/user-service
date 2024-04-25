@@ -6,9 +6,12 @@ import (
 
 	"github.com/MelnikovNA/noolingo-user-service/internal/domain"
 	"github.com/MelnikovNA/noolingo-user-service/internal/repository"
+	"github.com/sirupsen/logrus"
 )
 
-type userService struct {
+type UserService struct {
+	logger     *logrus.Logger
+	config     *domain.Config
 	repository repository.Repository
 }
 
@@ -16,7 +19,15 @@ var (
 	ErrNoUserFound = errors.New("no such user found")
 )
 
-func (u *userService) GetUserByID(ctx context.Context, id string) (*domain.User, error) {
+func NewUserService(p *Params) *UserService {
+	return &UserService{
+		logger:     p.Logger,
+		config:     p.Config,
+		repository: *p.Repository,
+	}
+}
+
+func (u *UserService) GetUserByID(ctx context.Context, id string) (*domain.User, error) {
 	user, err := u.repository.GetUserByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -28,11 +39,18 @@ func (u *userService) GetUserByID(ctx context.Context, id string) (*domain.User,
 	return user, err
 }
 
-func (u *userService) CreateUser(ctx context.Context, user *domain.User) (string, error) {
-	return u.repository.CreateUser(ctx, user)
+func (u *UserService) GetUserByEmail(ctx context.Context, email string) (*domain.User, error) {
+	user, err := u.repository.GetUserByEmail(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, ErrNoUserFound
+	}
+	return user, err
 }
 
-func (u *userService) UpdateUser(ctx context.Context, user *domain.User) error {
+func (u *UserService) UpdateUser(ctx context.Context, user *domain.User) error {
 	user2, err := u.GetUserByID(ctx, user.ID)
 	if err != nil {
 		return err

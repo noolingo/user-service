@@ -1,6 +1,6 @@
 module github.com/MelnikovNA/noolingo-user-service
 
-go 1.21.4
+go 1.22.2
 
 require (
 	github.com/MelnikovNA/noolingoproto v0.0.0-20240203091227-a775bee0d28d
@@ -12,7 +12,9 @@ require (
 	gopkg.in/yaml.v3 v3.0.1
 )
 
-require github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
+require github.com/golang-jwt/jwt/v5 v5.2.1
+
+require github.com/MelnikovNA/sha256password v0.0.0-20240418124606-8c461022a533 // indirect
 
 require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
