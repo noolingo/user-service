@@ -8,11 +8,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type Service interface {
-
-	//SignIn(ctx context.Context, login string, password string)
-}
-
 type User interface {
 	GetUserByID(ctx context.Context, id string) (*domain.User, error)
 	UpdateUser(ctx context.Context, user *domain.User) error
@@ -24,6 +19,7 @@ type Auth interface {
 	SignIn(ctx context.Context, email string, password string) (accessToken string, refreshToken string, err error)
 	Refresh(ctx context.Context, refreshToken string) (newAccessToken string, newRefreshToken string, err error)
 	SignOut(ctx context.Context, accessToken, refreshToken string) error
+	DeleteUser(ctx context.Context, id string) error
 }
 
 type Params struct {

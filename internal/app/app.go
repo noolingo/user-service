@@ -33,8 +33,6 @@ func Run(config string) error {
 	log := logrus.New()
 	log.Infof("Hello app!%#v", cfg)
 
-	//token := tokens.New(&cfg.Auth)
-
 	db, err := mysql.New(&cfg.Mysql)
 	if err != nil {
 		return err

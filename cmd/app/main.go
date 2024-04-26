@@ -8,7 +8,7 @@ import (
 	"github.com/noolingo/user-service/internal/app"
 )
 
-// не пушить конфиг!!!!
+// не пушить!!!!
 const configPath = "config/config.yaml"
 
 func main() {
