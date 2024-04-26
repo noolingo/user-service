@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/MelnikovNA/noolingo-user-service/internal/domain"
-	"github.com/MelnikovNA/noolingo-user-service/internal/pkg/tokens"
-	"github.com/MelnikovNA/noolingo-user-service/internal/repository"
+	"github.com/noolingo/user-service/internal/domain"
+	"github.com/noolingo/user-service/internal/pkg/tokens"
+	"github.com/noolingo/user-service/internal/repository"
 	"github.com/MelnikovNA/noolingoproto/codegen/go/apierrors"
 	enc "github.com/MelnikovNA/sha256password"
 	"github.com/sirupsen/logrus"

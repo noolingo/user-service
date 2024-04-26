@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/MelnikovNA/noolingo-user-service/internal/service"
+	"github.com/noolingo/user-service/internal/service"
 	"github.com/MelnikovNA/noolingoproto/codegen/go/noolingo"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"

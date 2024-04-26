@@ -1,4 +1,4 @@
-module github.com/MelnikovNA/noolingo-user-service
+module github.com/noolingo/user-service
 
 go 1.22.2
 
