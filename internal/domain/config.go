@@ -4,14 +4,14 @@ import "time"
 
 type Config struct {
 	AppName    string     `yaml:"appname" env-default:"test"`
-	GrpcServer GrpcServer `yaml:"grpcserver"`
+	GrpcServer GrpcServer `yaml:"grpcserver" env-prefix:"USER_SERVICE_"`
 	Mysql      Mysql      `yaml:"mysql" env-prefix:"USER_SERVICE_"`
 	Auth       AppAuth    `yaml:"auth" env-prefix:"AUTH_"`
 }
 
 type GrpcServer struct {
-	Host string `yaml:"host" env-default:"0.0.0.0"`
-	Port string `yaml:"port" env-default:"9001"`
+	Host string `yaml:"host" env-default:"0.0.0.0" env:"HOST"`
+	Port string `yaml:"port" env-default:"9001" env:"PORT"`
 }
 
 type Mysql struct {
